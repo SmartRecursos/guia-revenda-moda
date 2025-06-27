@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guia Interativo: Revenda de Moda Online sem Estoque</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+    <style>
+        /* Chosen Palette: Serene Sands */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F5F2; /* Quartzo */
+            color: #333333; /* Cinza Escuro */
+        }
+        .text-accent-1 {
+            color: #A88F6F; /* Areia Quente */
+        }
+        .bg-accent-1 {
+            background-color: #A88F6F; /* Areia Quente */
+        }
+        .bg-secondary {
+            background-color: #FFFFFF; /* Branco Puro */
+        }
+        .border-subtle {
+            border-color: #E0DCD7; /* Creme Suave */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 700px; /* Adjust max-width as needed */
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px; /* Base height */
+            max-height: 400px; /* Max height to prevent excessive vertical space */
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .nav-link {
+            transition: all 0.2s ease-in-out;
+        }
+        .nav-link:hover {
+            transform: translateY(-2px);
+            color: #A88F6F; /* Accent 1 */
+        }
+        .section-header {
+            border-bottom: 2px solid #E0DCD7; /* Creme Suave */
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <!-- Application Structure Plan: A aplicação será uma SPA com navegação vertical. Cada seção principal (Visão Geral, Fornecedores, Produtos, Plataformas, Preços, Marketing, Logística) corresponderá a um capítulo chave do e-book e será acessível via um menu de navegação fixo no topo. A estrutura foi escolhida para proporcionar um fluxo de aprendizado linear e intuitivo, mas com a flexibilidade de pular para tópicos específicos de interesse. Cada seção terá um parágrafo introdutório para contextualizar o conteúdo e as interações. -->
+    <!-- Visualization & Content Choices: -->
+    <!-- - Visão Geral: Goal -> Informar sobre o modelo. Viz/Presentation -> Texto e um gráfico de pizza para ilustrar a divisão de custos. Interaction -> Nenhum, apenas leitura. Justification -> Visão rápida dos custos. Library/Method -> Chart.js. -->
+    <!-- - Fornecedores: Goal -> Guiar na busca e tipos de fornecedores. Viz/Presentation -> Tabela comparativa dinâmica de tipos de fornecedores. Interaction -> Botões para alternar entre descrições de tipos. Justification -> Facilita a compreensão das diferenças. Library/Method -> HTML/CSS e JS para alternar conteúdo. -->
+    <!-- - Plataformas: Goal -> Comparar plataformas. Viz/Presentation -> Gráfico de barras comparando "custos e funcionalidades" simulados. Interaction -> Dropdown para exibir detalhes da plataforma. Justification -> Ajuda na escolha da plataforma. Library/Method -> Chart.js e JS para texto. -->
+    <!-- - Preços: Goal -> Explicar precificação e lucro. Viz/Presentation -> Calculadora de margem de lucro com gráfico de donut. Interaction -> Inputs do usuário para cálculo dinâmico. Justification -> Ferramenta prática para precificação. Library/Method -> HTML inputs, JS para cálculo, Chart.js para donut. -->
+    <!-- - Marketing: Goal -> Mostrar eficácia dos canais. Viz/Presentation -> Gráfico de barras de ROI simulado para canais de marketing. Interaction -> Botões para detalhar cada canal. Justification -> Ajuda a priorizar esforços. Library/Method -> Chart.js e JS para alternar texto. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <header class="bg-secondary shadow-md fixed w-full z-50 py-4">
+        <nav class="container mx-auto px-6 flex items-center justify-between">
+            <a href="#home" class="text-2xl font-bold text-accent-1">Guia Revenda Moda</a>
+            <div class="hidden md:flex space-x-8">
+                <a href="#visao-geral" class="nav-link text-gray-700 hover:text-accent-1">Visão Geral</a>
+                <a href="#fornecedores" class="nav-link text-gray-700 hover:text-accent-1">Fornecedores</a>
+                <a href="#produtos" class="nav-link text-gray-700 hover:text-accent-1">Produtos</a>
+                <a href="#plataformas" class="nav-link text-gray-700 hover:text-accent-1">Plataformas</a>
+                <a href="#precos" class="nav-link text-gray-700 hover:text-accent-1">Preços</a>
+                <a href="#marketing" class="nav-link text-gray-700 hover:text-accent-1">Marketing</a>
+                <a href="#logistica" class="nav-link text-gray-700 hover:text-accent-1">Logística & Gestão</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden text-gray-700 focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden bg-secondary py-2">
+            <a href="#visao-geral" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Visão Geral</a>
+            <a href="#fornecedores" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Fornecedores</a>
+            <a href="#produtos" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Produtos</a>
+            <a href="#plataformas" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Plataformas</a>
+            <a href="#precos" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Preços</a>
+            <a href="#marketing" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Marketing</a>
+            <a href="#logistica" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Logística & Gestão</a>
+        </div>
+    </header>
+
+    <main class="pt-24 pb-12">
+        <section id="home" class="container mx-auto px-6 py-16 text-center">
+            <h1 class="text-5xl font-extrabold text-gray-800 mb-4">Guia Interativo: Revenda de Moda Online sem Estoque</h1>
+            <p class="text-xl text-gray-600 mb-8">Desvende o caminho para o sucesso na revenda de camisetas de marca, de futebol e moda em geral, sem a necessidade de gerenciar estoque físico.</p>
+            <a href="#visao-geral" class="inline-block bg-accent-1 text-white text-lg font-semibold px-8 py-3 rounded-full hover:bg-opacity-90 transition duration-300">Comece a Explorar</a>
+        </section>
+
+        <section id="visao-geral" class="container mx-auto px-6 py-16 bg-secondary rounded-lg shadow-lg mb-12">
+            <h2 class="text-4xl font-bold text-gray-800 mb-8 section-header pb-4">1. Visão Geral: O Modelo de Revenda Online</h2>
+            <p class="text-lg text-gray-700 mb-8">
+                Este capítulo introduz o conceito de revenda de moda online sem estoque, com foco em produtos de marca. Diferente do Print-on-Demand, o modelo aqui é sobre dropshipping ou atacado, onde você vende produtos que já existem, de marcas estabelecidas, e um terceiro (o fornecedor) é responsável pelo estoque e envio. Explore as vantagens e desafios para entender se este é o modelo ideal para o seu negócio.
+            </p>
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <h3 class="text-2xl font-semibold text-gray-700 mb-4">Como Funciona a Revenda Sem Estoque?</h3>
+                    <ul class="list-disc list-inside text-gray-600 space-y-2">
+                        <li>Você negocia com fornecedores de produtos de marca (atacado ou dropshipping).</li>
+                        <li>Anuncia os produtos na sua loja online.</li>
+                        <li>Cliente faz o pedido e paga em sua loja.</li>
+                        <li>Você repassa o pedido e o pagamento (menos sua margem) ao fornecedor.</li>
+                        <li>Fornecedor envia o produto diretamente ao cliente.</li>
+                        <li>Você lucra com a diferença.</li>
+                    </ul>
+                </div>
+                <div class="chart-container">
+                    <canvas id="modeloCustoChart"></canvas>
+                </div>
+            </div>
+            <div class="mt-8">
+                <h3 class="text-2xl font-semibold text-gray-700 mb-4">Vantagens e Desafios da Revenda de Marcas</h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-gray-50 p-6 rounded-lg shadow-sm border border-subtle">
+                        <h4 class="text-xl font-bold text-accent-1 mb-2">Vantagens</h4>
+                        <ul class="list-disc list-inside text-gray-600 space-y-2">
+                            <li>Baixo investimento inicial (sem custo de estoque).</li>
+                            <li>Vasta gama de produtos de marcas reconhecidas.</li>
+                            <li>Eliminação de risco de estoque parado.</li>
+                            <li>Foco em marketing e vendas.</li>
+                            <li>Flexibilidade para mudar produtos e nichos.</li>
+                            <li>Potencial de alta lucratividade com marcas.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-lg shadow-sm border border-subtle">
+                        <h4 class="text-xl font-bold text-red-500 mb-2">Desafios</h4>
+                        <ul class="list-disc list-inside text-gray-600 space-y-2">
+                            <li>Dependência total do fornecedor (estoque, qualidade, envio).</li>
+                            <li>Margens de lucro podem ser apertadas em dropshipping puro.</li>
+                            <li>Necessidade de verificar autenticidade e licenciamento das marcas.</li>
+                            <li>Concorrência acirrada no mercado de marcas.</li>
+                            <li>Gestão de devoluções e pós-venda.</li>
+                            <li>Atualização constante de estoque do fornecedor.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="fornecedores" class="container mx-auto px-6 py-16 bg-secondary rounded-lg shadow-lg mb-12">
+            <h2 class="text-4xl font-bold text-gray-800 mb-8 section-header pb-4">2. Encontrando Fornecedores de Marcas e Produtos de Moda</h2>
+            <p class="text-lg text-gray-700 mb-8">
+                A espinha dorsal do seu negócio de revenda é a qualidade e a confiabilidade dos seus fornecedores. Este capítulo detalha os tipos de fornecedores e como encontrar parceiros legítimos para garantir a autenticidade e a disponibilidade dos produtos de marca. Utilize os botões abaixo para explorar as características de cada tipo.
+            </p>
+            <div class="flex flex-wrap justify-center gap-4 mb-8">
+                <button class="supplier-type-button bg-accent-1 text-white px-6 py-2 rounded-full hover:bg-opacity-90 transition duration-300" data-type="atacado">Atacadistas</button>
+                <button class="supplier-type-button bg-gray-200 text-gray-700 px-6 py-2 rounded-full hover:bg-gray-300 transition duration-300" data-type="distribuidor">Distribuidores Oficiais</button>
+                <button class="supplier-type-button bg-gray-200 text-gray-700 px-6 py-2 rounded-full hover:bg-gray-300 transition duration-300" data-type="dropshipper">Dropshippers Especializados</button>
+            </div>
+            <div id="supplier-details" class="bg-gray-50 p-6 rounded-lg shadow-sm border border-subtle">
+                <h3 id="supplier-title" class="text-2xl font-bold text-accent-1 mb-4">Atacadistas</h3>
+                <p id="supplier-description" class="text-gray-600 mb-4">
+                    Compram grandes volumes diretamente das fábricas ou de grandes distribuidores e revendem para lojistas em menores volumes (mas ainda em quantidade). Oferecem preços mais baixos por peça, mas exigem um investimento inicial em estoque.
+                </p>
+                <h4 class="text-xl font-semibold text-gray-700 mb-2">Vantagens:</h4>
+                <ul id="supplier-advantages" class="list-disc list-inside text-gray-600 mb-4">
+                    <li>Melhores margens de lucro por peça.</li>
+                    <li>Maior controle sobre o estoque e envio.</li>
+                    <li>Acesso a coleções exclusivas ou pré-lançamentos.</li>
+                </ul>
+                <h4 class="text-xl font-semibold text-gray-700 mb-2">Desvantagens:</h4>
+                <ul id="supplier-disadvantages" class="list-disc list-inside text-gray-600">
+                    <li>Exige investimento em estoque.</li>
+                    <li>Risco de produtos encalhados.</li>
+                    <li>Responsabilidade pela logística de armazenamento e envio.</li>
+                </ul>
+            </div>
+            <div class="mt-8">
+                <h3 class="text-2xl font-semibold text-gray-700 mb-4">Como Encontrar Fornecedores Confiáveis?</h3>
+                <ul class="list-disc list-inside text-gray-600 space-y-2">
+                    <li>Feiras e eventos do setor de moda.</li>
+                    <li>Pesquisa online em diretórios de atacadistas (ex: B2W Digital, Alibaba, Faire).</li>
+                    <li>Contato direto com as marcas para distribuidores oficiais.</li>
+                    <li>Redes de networking com outros lojistas.</li>
+                    <li>Verificação de reputação e credenciais (CNPJ, referências).</li>
+                </ul>
+                <h3 class="text-2xl font-semibold text-gray-700 mb-4 mt-6">Autenticidade e Licenciamento: A Chave para Marcas</h3>
+                <p class="text-gray-600">
+                    Ao revender produtos de marca, a autenticidade é primordial. Garanta que seus fornecedores são legítimos para evitar problemas legais e manter a confiança do cliente. Peça certificados de autenticidade, notas fiscais de origem e, se possível, contratos de revenda. Para camisetas de futebol, verifique o licenciamento oficial dos clubes e ligas.
+                </p>
+            </div>
+        </section>
+
+        <section id="produtos" class="container mx-auto px-6 py-16 bg-secondary rounded-lg shadow-lg mb-12">
+            <h2 class="text-4xl font-bold text-gray-800 mb-8 section-header pb-4">3. Seleção e Curadoria de Produtos de Moda</h2>
+            <p class="text-lg text-gray-700 mb-8">
+                A curadoria de produtos é o que define o estilo e o apelo da sua loja. Este capítulo aborda a importância de pesquisar tendências, selecionar marcas e gerenciar seu catálogo de forma eficiente. Veja como as tendências de moda podem influenciar a escolha dos seus produtos.
+            </p>
+            <div class="chart-container">
+                <canvas id="tendenciasModaChart"></canvas>
+            </div>
+            <div class="mt-8">
+                <h3 class="text-2xl font-semibold text-gray-700 mb-4">Dicas para Curadoria e Gestão de Catálogo</h3>
+                <ul class="list-disc list-inside text-gray-600 space-y-2">
+                    <li>**Pesquisa de Tendências:** Utilize plataformas como WGSN, Pinterest, Instagram, e blogs de moda para identificar o que está em alta.</li>
+                    <li>**Diversidade de Marcas:** Ofereça uma mistura de marcas populares e emergentes para atrair diferentes públicos.</li>
+                    <li>**Camisetas de Futebol:** Mantenha-se atualizado com lançamentos de clubes e seleções, e edições especiais.</li>
+                    <li>**Gestão de Estoque (com fornecedor):** Se você trabalha com dropshipping, use ferramentas de sincronização de estoque com seu fornecedor para evitar vendas de produtos indisponíveis.</li>
+                    <li>**Qualidade das Imagens:** Use fotos de alta resolução fornecidas pelas marcas.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="plataformas" class="container mx-auto px-6 py-16 bg-secondary rounded-lg shadow-lg mb-12">
+            <h2 class="text-4xl font-bold text-gray-800 mb-8 section-header pb-4">4. Escolhendo sua Plataforma de E-commerce para Revenda</h2>
+            <p class="text-lg text-gray-700 mb-8">
+                A plataforma de e-commerce é a base da sua loja online. Escolha uma que ofereça as funcionalidades necessárias para revenda, como integrações com fornecedores e boa gestão de catálogo. O gráfico abaixo compara as opções mais populares para o mercado brasileiro. Selecione uma plataforma para ver mais detalhes.
+            </p>
+            <div class="chart-container mb-8">
+                <canvas id="plataformasChart"></canvas>
+            </div>
+            <div class="flex justify-center mb-6">
+                <select id="plataforma-selector" class="p-3 rounded-md border border-subtle shadow-sm">
+                    <option value="shopify">Shopify</option>
+                    <option value="nuvemshop">Nuvemshop</option>
+                    <option value="woocommerce">WooCommerce</option>
+                </select>
+            </div>
+            <div id="plataforma-detalhes" class="bg-gray-50 p-6 rounded-lg shadow-sm border border-subtle">
+                <h3 id="plataforma-titulo" class="text-2xl font-bold text-accent-1 mb-4">Shopify</h3>
+                <p id="plataforma-descricao" class="text-gray-600">
+                    O Shopify é uma plataforma SaaS (Software as a Service) completa e fácil de usar, ideal para iniciantes e revendedores. Oferece inúmeras integrações com aplicativos de dropshipping e ferramentas de automação de estoque. É uma solução robusta e escalável, com suporte 24/7.
+                </p>
+                <h4 class="text-xl font-semibold text-gray-700 mt-4 mb-2">Prós:</h4>
+                <ul id="plataforma-pros" class="list-disc list-inside text-gray-600 mb-4">
+                    <li>Facilidade de uso e configuração rápida.</li>
+                    <li>Vasta gama de aplicativos para dropshipping e sincronização de estoque.</li>
+                    <li>Suporte ao cliente 24/7.</li>
+                </ul>
+                <h4 class="text-xl font-semibold text-gray-700 mb-2">Contras:</h4>
+                <ul id="plataforma-contras" class="list-disc list-inside text-gray-600">
+                    <li>Custo mensal recorrente.</li>
+                    <li>Taxas de transação (se não usar Shopify Payments).</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="precos" class="container mx-auto px-6 py-16 bg-secondary rounded-lg shadow-lg mb-12">
+            <h2 class="text-4xl font-bold text-gray-800 mb-8 section-header pb-4">5. Estratégias de Preços e Margens de Lucro</h2>
+            <p class="text-lg text-gray-700 mb-8">
+                Definir o preço certo é crucial para a rentabilidade da sua loja de revenda. Este capítulo aborda como calcular suas margens de lucro, considerando os custos do produto, frete e marketing. Use a calculadora interativa para simular suas margens.
+            </p>
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                <div class="bg-gray-50 p-6 rounded-lg shadow-sm border border-subtle">
+                    <h3 class="text-2xl font-semibold text-gray-700 mb-4">Calculadora de Margem de Lucro</h3>
+                    <div class="mb-4">
+                        <label for="custo-produto" class="block text-gray-700 text-sm font-bold mb-2">Custo do Produto (R$):</label>
+                        <input type="number" id="custo-produto" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline border-subtle" value="100">
+                    </div>
+                    <div class="mb-4">
+                        <label for="custo-frete" class="block text-gray-700 text-sm font-bold mb-2">Custo do Frete (R$):</label>
+                        <input type="number" id="custo-frete" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline border-subtle" value="20">
+                    </div>
+                    <div class="mb-4">
+                        <label for="outros-custos" class="block text-gray-700 text-sm font-bold mb-2">Outros Custos (Marketing, Plataforma - R$):</label>
+                        <input type="number" id="outros-custos" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline border-subtle" value="10">
+                    </div>
+                    <div class="mb-4">
+                        <label for="margem-desejada" class="block text-gray-700 text-sm font-bold mb-2">Margem de Lucro Desejada (%):</label>
+                        <input type="number" id="margem-desejada" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline border-subtle" value="30">
+                    </div>
+                    <button id="calcular-preco" class="bg-accent-1 text-white px-6 py-2 rounded-full hover:bg-opacity-90 transition duration-300">Calcular Preço de Venda</button>
+                    <p class="mt-4 text-gray-800 text-lg">Preço de Venda Sugerido: <span id="preco-sugerido" class="font-bold text-accent-1">R$ 0,00</span></p>
+                </div>
+                <div class="chart-container">
+                    <canvas id="margemLucroChart"></canvas>
+                </div>
+            </div>
+            <div class="mt-8">
+                <h3 class="text-2xl font-semibold text-gray-700 mb-4">Estratégias de Precificação</h3>
+                <ul class="list-disc list-inside text-gray-600 space-y-2">
+                    <li>**Preço de Custo + Margem:** Adicione uma porcentagem de lucro desejada sobre o custo total.</li>
+                    <li>**Preço Competitivo:** Analise os preços da concorrência para produtos similares.</li>
+                    <li>**Precificação por Valor:** Baseie o preço no valor percebido da marca e do produto.</li>
+                    <li>**Promoções:** Utilize descontos e ofertas para impulsionar as vendas, mas sempre calcule o impacto na sua margem.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="marketing" class="container mx-auto px-6 py-16 bg-secondary rounded-lg shadow-lg mb-12">
+            <h2 class="text-4xl font-bold text-gray-800 mb-8 section-header pb-4">6. Marketing e Vendas para Marcas de Terceiros</h2>
+            <p class="text-lg text-gray-700 mb-8">
+                Marketing para produtos de marca exige foco na autenticidade e na construção de confiança. Este capítulo explora as melhores estratégias digitais para promover sua loja e as camisetas de marca, incluindo o potencial de retorno de investimento (ROI) de diferentes canais.
+            </p>
+            <div class="chart-container mb-8">
+                <canvas id="marketingROIChart"></canvas>
+            </div>
+            <div class="flex flex-wrap justify-center gap-4 mb-8">
+                <button class="marketing-channel-button bg-accent-1 text-white px-6 py-2 rounded-full hover:bg-opacity-90 transition duration-300" data-channel="social">Mídias Sociais</button>
+                <button class="marketing-channel-button bg-gray-200 text-gray-700 px-6 py-2 rounded-full hover:bg-gray-300 transition duration-300" data-channel="google">Google Ads (Shopping)</button>
+                <button class="marketing-channel-button bg-gray-200 text-gray-700 px-6 py-2 rounded-full hover:bg-gray-300 transition duration-300" data-channel="email">E-mail Marketing</button>
+            </div>
+            <div id="marketing-detalhes" class="bg-gray-50 p-6 rounded-lg shadow-sm border border-subtle">
+                <h3 id="marketing-titulo" class="text-2xl font-bold text-accent-1 mb-4">Mídias Sociais (Instagram, TikTok, Facebook)</h3>
+                <p id="marketing-descricao" class="text-gray-600">
+                    Perfeitas para mostrar o estilo de vida associado às marcas que você vende. Use fotos e vídeos de alta qualidade fornecidos pelas marcas ou crie conteúdo original que inspire seu público. Foque em autenticidade e engajamento. Crie conteúdo que celebre as marcas e o estilo que elas representam.
+                </p>
+            </div>
+            <div class="mt-8">
+                <h3 class="text-2xl font-semibold text-gray-700 mb-4">Dicas de Marketing para Revenda de Marcas</h3>
+                <ul class="list-disc list-inside text-gray-600 space-y-2">
+                    <li>**Construa Autoridade:** Posicione sua loja como especialista nas marcas que vende.</li>
+                    <li>**Conteúdo Autêntico:** Use fotos e vídeos que mostrem a qualidade e autenticidade dos produtos.</li>
+                    <li>**SEO Focado em Marcas:** Otimize sua loja para termos de busca como "camiseta [marca]", "camisa oficial [clube]".</li>
+                    <li>**Parcerias:** Colabore com influenciadores que se alinham com as marcas que você oferece.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="logistica" class="container mx-auto px-6 py-16 bg-secondary rounded-lg shadow-lg mb-12">
+            <h2 class="text-4xl font-bold text-gray-800 mb-8 section-header pb-4">7. Logística, Gestão de Pedidos e Pós-Venda</h2>
+            <p class="text-lg text-gray-700 mb-8">
+                Mesmo sem estoque físico, a gestão de pedidos e o atendimento ao cliente são cruciais. Este capítulo detalha como otimizar o fluxo de pedidos com fornecedores, gerenciar o envio e garantir um pós-venda que construa a lealdade do cliente.
+            </p>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-gray-50 p-6 rounded-lg shadow-sm border border-subtle">
+                    <h3 class="text-2xl font-semibold text-gray-700 mb-4">Gestão de Pedidos e Fornecedores</h3>
+                    <ul class="list-disc list-inside text-gray-600 space-y-2">
+                        <li>**Automação:** Utilize apps ou APIs para sincronizar pedidos automaticamente com seus fornecedores.</li>
+                        <li>**Comunicação Clara:** Mantenha um canal aberto e eficiente com seus fornecedores para atualizações de estoque e status de envio.</li>
+                        <li>**Rastreamento:** Forneça códigos de rastreamento para todos os pedidos e mantenha o cliente atualizado sobre o status da entrega.</li>
+                        <li>**Backup de Fornecedores:** Tenha mais de um fornecedor para os mesmos produtos, se possível, para evitar interrupções no caso de problemas.</li>
+                    </ul>
+                </div>
+                <div class="bg-gray-50 p-6 rounded-lg shadow-sm border border-subtle">
+                    <h3 class="text-2xl font-semibold text-gray-700 mb-4">Atendimento ao Cliente e Pós-Venda</h3>
+                    <ul class="list-disc list-inside text-gray-600 space-y-2">
+                        <li>**Políticas Claras:** Tenha políticas de troca, devolução e garantia bem definidas e visíveis na loja.</li>
+                        <li>**Agilidade nas Respostas:** Responda rapidamente a dúvidas e problemas dos clientes.</li>
+                        <li>**Gestão de Expectativas:** Informe sobre os prazos de entrega esperados e possíveis variações.</li>
+                        <li>**Resolução de Problemas:** Em caso de defeito ou erro, trabalhe com o fornecedor para uma solução rápida e justa para o cliente.</li>
+                        <li>**Solicitação de Feedback:** Incentive avaliações e depoimentos para construir prova social.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="conclusao" class="container mx-auto px-6 py-16 text-center">
+            <h2 class="text-4xl font-bold text-gray-800 mb-8 section-header pb-4">Conclusão: O Futuro da Sua Loja de Revenda</h2>
+            <p class="text-lg text-gray-700 mb-8">
+                A revenda de moda online sem estoque é um modelo de negócio com grande potencial, especialmente no mercado de marcas. Ao focar em fornecedores confiáveis, produtos autênticos, marketing estratégico e um excelente atendimento ao cliente, você pode construir uma loja lucrativa e duradoura. Mantenha-se atualizado com as tendências e otimize continuamente sua operação.
+            </p>
+            <h3 class="text-3xl font-semibold text-gray-700 mb-4">Recursos Adicionais</h3>
+            <div class="text-gray-600 space-y-2 mb-8">
+                <p>Para aprofundar seus conhecimentos, explore os seguintes tópicos:</p>
+                <ul class="list-disc list-inside mx-auto max-w-lg">
+                    <li>Diretórios de Atacadistas Online (nacionais e internacionais).</li>
+                    <li>Cursos de E-commerce e Marketing Digital.</li>
+                    <li>Legislação sobre Revenda e Direitos Autorais de Marcas.</li>
+                    <li>Ferramentas de Sincronização de Estoque para Dropshipping.</li>
+                </ul>
+            </div>
+            <a href="#home" class="inline-block bg-accent-1 text-white text-lg font-semibold px-8 py-3 rounded-full hover:bg-opacity-90 transition duration-300">Voltar ao Topo</a>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-white py-8 text-center">
+        <p>&copy; 2024 Guia Revenda Moda Online. Todos os direitos reservados.</p>
+        <p class="text-sm mt-2">Desenvolvido por Smart Recursos</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Mobile Menu Toggle
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (mobileMenuButton && mobileMenu) {
+                mobileMenuButton.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('hidden');
+                });
+            }
+
+            // Smooth scrolling for navigation links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden'); // Hide mobile menu after selection
+                    }
+                });
+            });
+
+            // Visão Geral Chart (Modelo de Custo)
+            const modeloCustoCtx = document.getElementById('modeloCustoChart').getContext('2d');
+            const modeloCustoChart = new Chart(modeloCustoCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['Custo do Produto', 'Custo do Frete', 'Marketing', 'Lucro'],
+                    datasets: [{
+                        data: [50, 15, 10, 25],
+                        backgroundColor: [
+                            '#7A6A53', // Caramelo Suave
+                            '#A88F6F', // Areia Quente
+                            '#E0DCD7', // Creme Suave
+                            '#333333'  // Cinza Escuro
+                        ],
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#333333'
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Distribuição de Custos e Lucro (Exemplo)',
+                            color: '#333333',
+                            font: {
+                                size: 16
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed !== null) {
+                                        label += context.parsed + '%';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Fornecedores - Dynamic Content
+            const supplierData = {
+                atacado: {
+                    title: 'Atacadistas',
+                    description: 'Compram grandes volumes diretamente das fábricas ou de grandes distribuidores e revendem para lojistas em menores volumes (mas ainda em quantidade). Oferecem preços mais baixos por peça, mas exigem um investimento inicial em estoque.',
+                    advantages: ['Melhores margens de lucro por peça.', 'Maior controle sobre o estoque e envio.', 'Acesso a coleções exclusivas ou pré-lançamentos.'],
+                    disadvantages: ['Exige investimento em estoque.', 'Risco de produtos encalhados.', 'Responsabilidade pela logística de armazenamento e envio.']
+                },
+                distribuidor: {
+                    title: 'Distribuidores Oficiais',
+                    description: 'São empresas autorizadas pelas próprias marcas a vender seus produtos para revendedores. Garantem a autenticidade e acesso a produtos oficiais, muitas vezes com suporte e materiais de marketing da marca.',
+                    advantages: ['Garantia de autenticidade dos produtos.', 'Acesso a produtos oficiais e licenciados.', 'Suporte e materiais de marketing da marca.','Melhores condições para revenda legal.'],
+                    disadvantages: ['Margens de lucro podem ser fixas ou menores que atacado.', 'Requisitos de compra mínima mais rigorosos.', 'Menor flexibilidade na escolha de marcas.']
+                },
+                dropshipper: {
+                    title: 'Dropshippers Especializados',
+                    description: 'Parceiros que mantêm o estoque e enviam os produtos diretamente ao seu cliente em seu nome, eliminando a necessidade de qualquer estoque físico para você. Ideal para começar com baixo investimento.',
+                    advantages: ['Zero investimento em estoque.', 'Sem preocupações com armazenamento ou logística de envio.', 'Grande variedade de produtos disponíveis para teste rápido.', 'Facilidade para iniciar o negócio.'],
+                    disadvantages: ['Margens de lucro geralmente mais baixas.', 'Dependência total do dropshipper para estoque e envio.', 'Dificuldade em controlar a qualidade da embalagem e o tempo de entrega.','Concorrência elevada.']
+                }
+            };
+
+            const supplierButtons = document.querySelectorAll('.supplier-type-button');
+            const supplierTitle = document.getElementById('supplier-title');
+            const supplierDescription = document.getElementById('supplier-description');
+            const supplierAdvantages = document.getElementById('supplier-advantages');
+            const supplierDisadvantages = document.getElementById('supplier-disadvantages');
+
+            const updateSupplierContent = (type) => {
+                const data = supplierData[type];
+                supplierTitle.textContent = data.title;
+                supplierDescription.textContent = data.description;
+
+                supplierAdvantages.innerHTML = '';
+                data.advantages.forEach(advantage => {
+                    const li = document.createElement('li');
+                    li.textContent = advantage;
+                    supplierAdvantages.appendChild(li);
+                });
+
+                supplierDisadvantages.innerHTML = '';
+                data.disadvantages.forEach(disadvantage => {
+                    const li = document.createElement('li');
+                    li.textContent = disadvantage;
+                    supplierDisadvantages.appendChild(li);
+                });
+
+                supplierButtons.forEach(btn => {
+                    if (btn.dataset.type === type) {
+                        btn.classList.remove('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
+                        btn.classList.add('bg-accent-1', 'text-white', 'hover:bg-opacity-90');
+                    } else {
+                        btn.classList.remove('bg-accent-1', 'text-white', 'hover:bg-opacity-90');
+                        btn.classList.add('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
+                    }
+                });
+            };
+
+            supplierButtons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    updateSupplierContent(e.target.dataset.type);
+                });
+            });
+
+            // Produtos - Tendências de Moda Chart
+            const tendenciasModaCtx = document.getElementById('tendenciasModaChart').getContext('2d');
+            const tendenciasModaChart = new Chart(tendenciasModaCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Esportivo', 'Casual Urbano', 'Vintage', 'Minimalista', 'Cultura Pop'],
+                    datasets: [{
+                        label: 'Popularidade de Tendências (%)',
+                        data: [75, 85, 60, 50, 70],
+                        backgroundColor: [
+                            '#7A6A53',
+                            '#A88F6F',
+                            '#7A6A53',
+                            '#A88F6F',
+                            '#7A6A53'
+                        ],
+                        borderColor: [
+                            '#5C4D3D',
+                            '#856E58',
+                            '#5C4D3D',
+                            '#856E58',
+                            '#5C4D3D'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'Tendências de Moda (Dados Simulados)',
+                            color: '#333333',
+                            font: {
+                                size: 16
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += context.parsed.y + '%';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                },
+                                color: '#333333'
+                            },
+                            grid: {
+                                color: '#E0DCD7'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#333333',
+                                callback: function(value, index, values) {
+                                    const label = this.getLabelForValue(value);
+                                    if (label.length > 16) {
+                                        return label.split(' ').map((word, i, arr) => {
+                                            if (word.length > 8 && i < arr.length - 1) {
+                                                return word + '-';
+                                            }
+                                            return word;
+                                        }).join(' ').match(/.{1,16}(\s|$)/g).map(s => s.trim());
+                                    }
+                                    return label;
+                                }
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Plataformas Chart & Details
+            const plataformasCtx = document.getElementById('plataformasChart').getContext('2d');
+            const plataformasChart = new Chart(plataformasCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Shopify', 'Nuvemshop', 'WooCommerce'],
+                    datasets: [{
+                        label: 'Facilidade de Uso (1-10)',
+                        data: [9, 8, 5],
+                        backgroundColor: '#A88F6F',
+                        borderColor: '#856E58',
+                        borderWidth: 1
+                    }, {
+                        label: 'Customização (1-10)',
+                        data: [7, 6, 10],
+                        backgroundColor: '#7A6A53',
+                        borderColor: '#5C4D3D',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                color: '#333333'
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Comparativo de Plataformas (Dados Simulados)',
+                            color: '#333333',
+                            font: {
+                                size: 16
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += context.parsed.y;
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 10,
+                            ticks: {
+                                color: '#333333'
+                            },
+                            grid: {
+                                color: '#E0DCD7'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#333333'
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+
+            const plataformaSelector = document.getElementById('plataforma-selector');
+            const plataformaTitulo = document.getElementById('plataforma-titulo');
+            const plataformaDescricao = document.getElementById('plataforma-descricao');
+            const plataformaPros = document.getElementById('plataforma-pros');
+            const plataformaContras = document.getElementById('plataforma-contras');
+
+            const plataformaDetailsData = {
+                shopify: {
+                    title: 'Shopify',
+                    description: 'O Shopify é uma plataforma SaaS (Software as a Service) completa e fácil de usar, ideal para iniciantes e revendedores. Oferece inúmeras integrações com aplicativos de dropshipping e ferramentas de automação de estoque. É uma solução robusta e escalável, com suporte 24/7.',
+                    pros: ['Facilidade de uso e configuração rápida.', 'Vasta gama de aplicativos para dropshipping e sincronização de estoque.', 'Suporte ao cliente 24/7.'],
+                    contras: ['Custo mensal recorrente.', 'Taxas de transação (se não usar Shopify Payments).']
+                },
+                nuvemshop: {
+                    title: 'Nuvemshop',
+                    description: 'A Nuvemshop é uma plataforma SaaS focada no mercado latino-americano, com suporte e integrações adaptadas para o Brasil. É fácil de usar e ideal para quem busca uma solução robusta com suporte local.',
+                    pros: ['Suporte em português.', 'Integrações com meios de pagamento e logística locais.', 'Preços em BRL.', 'Interface amigável.'],
+                    contras: ['Menos abrangente globalmente em termos de aplicativos.', 'Menos flexibilidade de personalização de código.']
+                },
+                woocommerce: {
+                    title: 'WooCommerce',
+                    description: 'WooCommerce é um plugin gratuito para WordPress que transforma seu site em uma loja online. Oferece controle total e flexibilidade para personalização, sendo ideal para quem já usa WordPress ou busca liberdade técnica.',
+                    pros: ['Gratuito (o plugin).', 'Controle total sobre o site e personalização.', 'Milhares de plugins e temas disponíveis.', 'Excelente para SEO.'],
+                    contras: ['Exige conhecimento técnico (hospedagem, manutenção).', 'Pode ter custos com hospedagem e outros plugins.', 'Curva de aprendizado maior.']
+                }
+            };
+
+            const updatePlataformaDetails = (platform) => {
+                const data = plataformaDetailsData[platform];
+                plataformaTitulo.textContent = data.title;
+                plataformaDescricao.textContent = data.description;
+
+                plataformaPros.innerHTML = '';
+                data.pros.forEach(item => {
+                    const li = document.createElement('li');
+                    li.textContent = item;
+                    plataformaPros.appendChild(li);
+                });
+
+                plataformaContras.innerHTML = '';
+                data.contras.forEach(item => {
+                    const li = document.createElement('li');
+                    li.textContent = item;
+                    plataformaContras.appendChild(li);
+                });
+            };
+
+            plataformaSelector.addEventListener('change', (e) => {
+                updatePlataformaDetails(e.target.value);
+            });
+
+            // Initialize with Shopify details
+            updatePlataformaDetails('shopify');
+
+            // Calculadora de Margem de Lucro
+            const custoProdutoInput = document.getElementById('custo-produto');
+            const custoFreteInput = document.getElementById('custo-frete');
+            const outrosCustosInput = document.getElementById('outros-custos');
+            const margemDesejadaInput = document.getElementById('margem-desejada');
+            const calcularPrecoBtn = document.getElementById('calcular-preco');
+            const precoSugeridoSpan = document.getElementById('preco-sugerido');
+            const margemLucroCtx = document.getElementById('margemLucroChart').getContext('2d');
+
+            let margemLucroChart; // Declare chart variable globally
+
+            const createOrUpdateMargemLucroChart = (custoTotal, lucroDesejado, precoVenda) => {
+                const custosPercent = (custoTotal / precoVenda) * 100;
+                const lucroPercent = (lucroDesejado / precoVenda) * 100;
+
+                const data = {
+                    labels: ['Custos Totais', 'Lucro Desejado'],
+                    datasets: [{
+                        data: [custosPercent, lucroPercent],
+                        backgroundColor: [
+                            '#7A6A53', // Caramelo Suave
+                            '#A88F6F'  // Areia Quente
+                        ],
+                        hoverOffset: 10
+                    }]
+                };
+
+                if (margemLucroChart) {
+                    margemLucroChart.data = data;
+                    margemLucroChart.update();
+                } else {
+                    margemLucroChart = new Chart(margemLucroCtx, {
+                        type: 'doughnut',
+                        data: data,
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom',
+                                    labels: {
+                                        color: '#333333'
+                                    }
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Distribuição de Custos vs. Lucro',
+                                    color: '#333333',
+                                    font: {
+                                        size: 16
+                                    }
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            let label = context.label || '';
+                                            if (label) {
+                                                label += ': ';
+                                            }
+                                            if (context.parsed !== null) {
+                                                label += context.parsed.toFixed(2) + '%';
+                                            }
+                                            return label;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            };
+
+            const calcularPreco = () => {
+                const custoProduto = parseFloat(custoProdutoInput.value) || 0;
+                const custoFrete = parseFloat(custoFreteInput.value) || 0;
+                const outrosCustos = parseFloat(outrosCustosInput.value) || 0;
+                const margemDesejada = parseFloat(margemDesejadaInput.value) || 0;
+
+                const custoTotal = custoProduto + custoFrete + outrosCustos;
+
+                if (margemDesejada >= 100) {
+                    precoSugeridoSpan.textContent = 'Margem muito alta (>=100%)';
+                    if (margemLucroChart) margemLucroChart.destroy();
+                    margemLucroChart = null;
+                    return;
+                }
+
+                const precoVenda = custoTotal / (1 - (margemDesejada / 100));
+                const lucroDesejado = precoVenda - custoTotal;
+
+                if (!isNaN(precoVenda) && isFinite(precoVenda)) {
+                    precoSugeridoSpan.textContent = `R$ ${precoVenda.toFixed(2)}`;
+                    createOrUpdateMargemLucroChart(custoTotal, lucroDesejado, precoVenda);
+                } else {
+                    precoSugeridoSpan.textContent = 'R$ 0,00';
+                    if (margemLucroChart) margemLucroChart.destroy();
+                    margemLucroChart = null;
+                }
+            };
+
+            calcularPrecoBtn.addEventListener('click', calcularPreco);
+            custoProdutoInput.addEventListener('input', calcularPreco);
+            custoFreteInput.addEventListener('input', calcularPreco);
+            outrosCustosInput.addEventListener('input', calcularPreco);
+            margemDesejadaInput.addEventListener('input', calcularPreco);
+
+            // Initial calculation for Margem Lucro
+            calcularPreco();
+
+            // Marketing ROI Chart & Details
+            const marketingROITx = document.getElementById('marketingROIChart').getContext('2d');
+            const marketingROIChart = new Chart(marketingROITx, {
+                type: 'bar',
+                data: {
+                    labels: ['Mídias Sociais', 'Google Ads (Shopping)', 'E-mail Marketing'],
+                    datasets: [{
+                        label: 'ROI Esperado (%)',
+                        data: [150, 250, 300],
+                        backgroundColor: [
+                            '#A88F6F',
+                            '#7A6A53',
+                            '#A88F6F'
+                        ],
+                        borderColor: [
+                            '#856E58',
+                            '#5C4D3D',
+                            '#856E58'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'ROI Esperado por Canal de Marketing (Dados Simulados)',
+                            color: '#333333',
+                            font: {
+                                size: 16
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += context.parsed.y + '%';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                },
+                                color: '#333333'
+                            },
+                            grid: {
+                                color: '#E0DCD7'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#333333'
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+
+            const marketingChannelData = {
+                social: {
+                    title: 'Mídias Sociais (Instagram, TikTok, Facebook)',
+                    description: 'Perfeitas para mostrar o estilo de vida associado às marcas que você vende. Use fotos e vídeos de alta qualidade fornecidos pelas marcas ou crie conteúdo original que inspire seu público. Foque em autenticidade e engajamento. Crie conteúdo que celebre as marcas e o estilo que elas representam.'
+                },
+                google: {
+                    title: 'Google Ads (Google Shopping)',
+                    description: 'Ideal para capturar a intenção de compra. Seus produtos de marca podem aparecer diretamente nos resultados de busca com imagem e preço. Eficaz para pessoas que já sabem o que querem comprar.'
+                },
+                email: {
+                    title: 'E-mail Marketing',
+                    description: 'Um canal de alto ROI para construir relacionamento com clientes existentes e potenciais. Envie newsletters com novidades das marcas, promoções exclusivas e conteúdo relevante sobre moda e tendências. Personalização é a chave.'
+                }
+            };
+
+            const marketingChannelButtons = document.querySelectorAll('.marketing-channel-button');
+            const marketingTitulo = document.getElementById('marketing-titulo');
+            const marketingDescricao = document.getElementById('marketing-descricao');
+
+            const updateMarketingContent = (channel) => {
+                const data = marketingChannelData[channel];
+                marketingTitulo.textContent = data.title;
+                marketingDescricao.textContent = data.description;
+
+                marketingChannelButtons.forEach(btn => {
+                    if (btn.dataset.channel === channel) {
+                        btn.classList.remove('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
+                        btn.classList.add('bg-accent-1', 'text-white', 'hover:bg-opacity-90');
+                    } else {
+                        btn.classList.remove('bg-accent-1', 'text-white', 'hover:bg-opacity-90');
+                        btn.classList.add('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
+                    }
+                });
+            };
+
+            marketingChannelButtons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    updateMarketingContent(e.target.dataset.channel);
+                });
+            });
+            updateMarketingContent('social'); // Initialize with social media content
+        });
+    </script>
+</body>
+</html>
